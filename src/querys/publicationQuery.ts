@@ -3,6 +3,18 @@ import {pool} from '../database';
 import { PublicationWithUser } from '../models/models';
 
 
+
+
+// SELECT p.titulo,p.descripcion,p.fecha,u.nombre,u.apellidos,u.email,u.direccion,c.nombre AS categoria,m.url AS multimedia 
+//    FROM Publicaciones p 
+//        JOIN Usuarios u 
+//        ON p.id_usuario = u.ci 
+//            JOIN Categorias c 
+//            ON p.id_categoria = c.id_categoria 
+//                JOIN Multimedia m 
+//                ON p.id_multimedia = m.id_multimedia 
+//    WHERE p.es_solicitud = true 
+//    ORDER BY p.fecha DESC
 export const getPublicationsNecesityQuery = async (): Promise<QueryResult> => {
     const client = await pool.connect();
     try {
