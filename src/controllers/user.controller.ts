@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {postUserQuery} from "../querys/userQuery";
+import {postUserQuery, postUserLoginQuery} from "../querys/userQuery";
 import bcrypt from 'bcrypt';
 
 
@@ -32,6 +32,22 @@ export const postUser = async (req: Request, res: Response) =>{
     }
     catch(error){
         res.status(500).json(error);
+    }
+}
+
+
+
+export const postUserLogin = async (req: Request, res: Response) =>{
+    try{
+        const {ci, password} = req.body;
+
+        const user = await postUserLoginQuery(ci,password);
+
+        res.status(200).json(user.rows);
+    }
+    catch(error :any){
+        console.log(error)
+        res.status(500).json({error : error.message});
     }
 }
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getPublicationsNecesity, getPublicationsOffer, postPublication } from "../controllers/publication.controllers";
-import { postUser } from "../controllers/user.controller";
+import { postUser, postUserLogin } from "../controllers/user.controller";
 
 
 const router = Router();
@@ -12,6 +12,8 @@ router.get('/publicationsOffer', getPublicationsOffer);
 router.post('/publication', postPublication);
 
 router.post('/registro', postUser);
+
+router.post('/login', postUserLogin);
 
 
 

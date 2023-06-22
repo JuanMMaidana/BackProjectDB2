@@ -14,7 +14,7 @@ export const postUserQuery = async (ci:number, names:string, surnmes:string, ema
         const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM usuarios WHERE ci = $1', [ci]);
 
         if(duplicatePK.rows[0].count > 0){
-            throw new Error('La CI ya existe');
+            throw ('La CI ya existe');
         }
 
         const insertUser = `
@@ -34,3 +34,41 @@ export const postUserQuery = async (ci:number, names:string, surnmes:string, ema
         client.release();
     }
 }
+
+
+
+
+export const postUserLoginQuery = async (ci:number, password:string): Promise<any> => {
+    
+        const client = await pool.connect();
+                
+            const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM usuarios WHERE ci = $1', [ci]);
+
+            console.log(duplicatePK.rows[0].count)
+            console.log(duplicatePK.rows)
+
+    
+            if(duplicatePK.rows[0].count == 0){
+                console.log('La CI no existe')
+                throw ('La CI no existe');
+            }
+    
+            const result = await client.query('SELECT * FROM usuarios WHERE ci = $1', [ci]);
+
+            console.log(result.rows)
+
+    
+            const passwordDB = result.rows[0].hpassword;
+    
+            const isMatch = await bycript.compare(password, passwordDB);
+    
+            if(!isMatch){
+                throw ('Contraseña incorrecta');
+            }
+    
+            return result;
+    
+        
+
+
+    }
