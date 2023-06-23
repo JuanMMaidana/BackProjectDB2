@@ -85,3 +85,36 @@ export const postUserLoginQuery = async (ci:number, password:string): Promise<an
 
 
     }
+
+
+
+
+export const postFollowFriendQuery = async (ci:number, ci_friend:number): Promise<QueryResult> => {
+    
+        const client = await pool.connect();
+    
+        try {
+            
+            const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM seguidores WHERE ci_user = $1 AND ci_seguidor = $2', [ci, ci_friend]);
+    
+            if(duplicatePK.rows[0].count > 0){
+                throw new Error('Ya sigues a este usuario');
+            }
+    
+            const insertUser = `
+            INSERT INTO seguidores (ci_user, ci_seguidor) VALUES ($1, $2)`
+    
+            const values = [ci, ci_friend];
+    
+            const result = await client.query(insertUser, values);
+    
+            return result;
+    
+        }
+        catch (error:any) {
+            throw error;
+        }
+        finally {
+            client.release();
+        }
+    }
