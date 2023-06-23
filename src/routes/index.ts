@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPublicationsNecesity, getPublicationsOffer, postPublication } from "../controllers/publication.controllers";
+import { getPublicationsNecesity, getPublicationFiltersController, postPublication } from "../controllers/publication.controllers";
 import { postUser, postUserLogin } from "../controllers/user.controller";
 import authMiddleware from "../controllers/middleware/authControl";
 
@@ -8,7 +8,7 @@ const router = Router();
 
 router.get('/publicationsNecesity', getPublicationsNecesity);
 
-router.get('/publicationsOffer', getPublicationsOffer);
+router.get('/publicationsFilters', getPublicationFiltersController);
 
 router.post('/publication', authMiddleware, postPublication);
 
