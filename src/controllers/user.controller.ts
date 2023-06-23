@@ -1,13 +1,6 @@
 import { Request, Response } from "express";
 import {postUserQuery, postUserLoginQuery} from "../querys/userQuery";
-import bcrypt from 'bcrypt';
 
-
-const hashPassword = async (password: string): Promise<string> => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
-  };
 
 
 
@@ -21,17 +14,14 @@ export const postUser = async (req: Request, res: Response) =>{
             throw new Error('Las contraseñas no coinciden');
         }
 
-        const hashedPassword2 = await hashPassword(password);
+        
 
-        console.log(hashPassword)
-
-
-        const user = await postUserQuery(ci,names,surnames,email,ubication,hashedPassword2,id_question,response);
+        const user = await postUserQuery(ci,names,surnames,email,ubication,password,id_question,response);
 
         res.status(200).json(user.rows);
     }
-    catch(error){
-        res.status(500).json(error);
+    catch(error:any){
+        res.status(500).json(error.message);
     }
 }
 
@@ -43,11 +33,13 @@ export const postUserLogin = async (req: Request, res: Response) =>{
 
         const user = await postUserLoginQuery(ci,password);
 
-        res.status(200).json(user.rows);
+        res.status(200).json(user);
     }
     catch(error :any){
         console.log(error)
-        res.status(500).json({error : error.message});
+        res.status(500).json(error.message);
     }
 }
+
+
 

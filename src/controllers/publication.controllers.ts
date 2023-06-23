@@ -24,11 +24,12 @@ export const getPublicationsOffer = async (_req: Request, res: Response) => {
 
 //ci: string, titulo: string, descripcion: string, id_categoria: number, es_solicitud: boolean, url: string, id_usuario: string
 
-export const postPublication = async (req: Request, res: Response) => {
+export const postPublication = async (req, res) => {
     try{
-        const {ci, titulo, descripcion, id_categoria, es_solicitud, url} = req.body;
-        
-        const publications = await postPublicationQuery(ci, titulo, descripcion, id_categoria, es_solicitud, url);
+        const {titulo, descripcion, id_categoria, es_solicitud, url} = req.body;
+
+        const ci2 = req.user.ci; // Obtiene la ci del usuario desde el objeto req
+        const publications = await postPublicationQuery(ci2, titulo, descripcion, id_categoria, es_solicitud, url);
 
         res.status(200).json(publications.rows);
     }

@@ -1,6 +1,12 @@
 import {QueryResult} from 'pg';
 import {pool} from '../database';
 import bycript from 'bcrypt';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+
+
+
+dotenv.config();
 
 
 export const postUserQuery = async (ci:number, names:string, surnmes:string, email:string, ubication:string, password:string, id_question: number, response:string): Promise<QueryResult> => {
@@ -39,34 +45,41 @@ export const postUserQuery = async (ci:number, names:string, surnmes:string, ema
 
 
 export const postUserLoginQuery = async (ci:number, password:string): Promise<any> => {
+
+
     
         const client = await pool.connect();
                 
             const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM usuarios WHERE ci = $1', [ci]);
 
-            console.log(duplicatePK.rows[0].count)
-            console.log(duplicatePK.rows)
 
     
             if(duplicatePK.rows[0].count == 0){
-                console.log('La CI no existe')
-                throw ('La CI no existe');
+                throw new Error('La CI no existe');
             }
     
             const result = await client.query('SELECT * FROM usuarios WHERE ci = $1', [ci]);
 
-            console.log(result.rows)
 
-    
             const passwordDB = result.rows[0].hpassword;
     
             const isMatch = await bycript.compare(password, passwordDB);
+
     
             if(!isMatch){
-                throw ('Contraseña incorrecta');
+                throw new Error('Contraseña incorrecta');
             }
+
+
+            const token = jwt.sign({ ci: result.rows[0].ci }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+
     
-            return result;
+            return {
+                token,
+                user: {
+                    ci: result.rows[0].ci,
+                }
+            };
     
         
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getPublicationsNecesity, getPublicationsOffer, postPublication } from "../controllers/publication.controllers";
 import { postUser, postUserLogin } from "../controllers/user.controller";
+import authMiddleware from "../controllers/middleware/authControl";
 
 
 const router = Router();
@@ -9,11 +10,11 @@ router.get('/publicationsNecesity', getPublicationsNecesity);
 
 router.get('/publicationsOffer', getPublicationsOffer);
 
-router.post('/publication', postPublication);
+router.post('/publication', authMiddleware, postPublication);
 
 router.post('/registro', postUser);
 
-router.post('/login', postUserLogin);
+router.post('/login' ,postUserLogin);
 
 
 

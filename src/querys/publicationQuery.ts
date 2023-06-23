@@ -67,7 +67,9 @@ export const getPublicationsOfferQuery = async (): Promise<QueryResult> => {
 //``````
 
 export const postPublicationQuery = async (ci: number, titulo: string, descripcion: string, id_categoria: number, es_solicitud: boolean, url: string): Promise<QueryResult> => {
-    const client = await pool.connect();
+    
+  console.log(ci);
+  const client = await pool.connect();
   try {
     const query = `
       WITH inserted_multimedia AS (
@@ -79,11 +81,9 @@ export const postPublicationQuery = async (ci: number, titulo: string, descripci
     `;
     const values = [url, titulo, descripcion, ci, id_categoria, es_solicitud];
 
-
     const results: QueryResult<any> = await client.query(query, values);
 
     return results;
-
 
   } catch (error) {
     console.log(error)
