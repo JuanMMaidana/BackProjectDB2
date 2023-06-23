@@ -1,17 +1,29 @@
 import { Router } from "express";
-import { getPublicationsNecesity, getPublicationsOffer, postPublication } from "../controllers/publication.controllers";
-import { postUser } from "../controllers/user.controller";
+import { getPublicationsNecesity, getPublicationFiltersController, postPublication, getCategories, getPublicationsUser } from "../controllers/publication.controllers";
+import { postUser, postUserLogin, postFollowFriend } from "../controllers/user.controller";
+import authMiddleware from "../controllers/middleware/authControl";
 
 
 const router = Router();
 
 router.get('/publicationsNecesity', getPublicationsNecesity);
 
-router.get('/publicationsOffer', getPublicationsOffer);
+router.get('/publicationsFilters', getPublicationFiltersController);
 
-router.post('/publication', postPublication);
+router.post('/publication', authMiddleware, postPublication);
 
 router.post('/registro', postUser);
+
+router.post('/login' ,postUserLogin);
+
+router.get('/categorias', getCategories);
+
+router.post('/publicationsUser', authMiddleware, getPublicationsUser);
+
+router.post('/seguirAmigo', authMiddleware, postFollowFriend);
+
+router.get('/publiacionesAmigos', authMiddleware, getPublicationsUser);
+
 
 
 

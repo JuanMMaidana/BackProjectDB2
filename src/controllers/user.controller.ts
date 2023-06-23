@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
-import {postUserQuery} from "../querys/userQuery";
-import bcrypt from 'bcrypt';
+import {postUserQuery, postUserLoginQuery, postFollowFriendQuery} from "../querys/userQuery";
+import {getPublicationsFriendsQuery} from "../querys/publicationQuery";
 
-
-const hashPassword = async (password: string): Promise<string> => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
-  };
 
 
 
@@ -21,17 +15,65 @@ export const postUser = async (req: Request, res: Response) =>{
             throw new Error('Las contraseñas no coinciden');
         }
 
-        const hashedPassword2 = await hashPassword(password);
+        
 
-        console.log(hashPassword)
-
-
-        const user = await postUserQuery(ci,names,surnames,email,ubication,hashedPassword2,id_question,response);
+        const user = await postUserQuery(ci,names,surnames,email,ubication,password,id_question,response);
 
         res.status(200).json(user.rows);
     }
-    catch(error){
-        res.status(500).json(error);
+    catch(error:any){
+        res.status(500).json(error.message);
     }
 }
+
+
+
+export const postUserLogin = async (req: Request, res: Response) =>{
+    try{
+        const {ci, password} = req.body;
+
+        const user = await postUserLoginQuery(ci,password);
+
+        res.status(200).json(user);
+    }
+    catch(error :any){
+        console.log(error)
+        res.status(500).json(error.message);
+    }
+}
+
+
+
+export const postFollowFriend = async (req, res) =>{
+    try{
+        const {ci_friend} = req.body;
+
+        const ci = req.user.ci;
+
+        const user = await postFollowFriendQuery(ci,ci_friend);
+
+        res.status(200).json(user.rows);
+    }
+    catch(error :any){
+        console.log(error)
+        res.status(500).json(error.message);
+    }
+}
+    
+
+export const getPublicationsFriends = async (req, res) =>{
+    try{
+
+        const ci = req.user.ci;
+
+        const user = await getPublicationsFriendsQuery(ci);
+
+        res.status(200).json(user.rows);
+    }
+    catch(error :any){
+        console.log(error)
+        res.status(500).json(error.message);
+    }
+}
+
 

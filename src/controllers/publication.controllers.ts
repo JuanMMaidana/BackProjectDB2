@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getPublicationsNecesityQuery, getPublicationsOfferQuery, postPublicationQuery } from "../querys/publicationQuery";
+import { getPublicationsNecesityQuery, postPublicationQuery, getPublicationFiltersQuery, getCategoriesQuery, getPublicationsUserQuery } from "../querys/publicationQuery";
 
 export const getPublicationsNecesity = async (_req: Request, res: Response) => {
     try {
@@ -11,24 +11,27 @@ export const getPublicationsNecesity = async (_req: Request, res: Response) => {
     }
 }
 
-
-export const getPublicationsOffer = async (_req: Request, res: Response) => {
+export const getPublicationFiltersController = async (req: Request, res: Response) => {
     try {
-        const publications = await getPublicationsOfferQuery();
+        const { titulo, categoria, es_solicitud } = req.body;
+
+        const publications = await getPublicationFiltersQuery(titulo, categoria, es_solicitud);
+
         res.status(200).json(publications.rows);
     }
-    catch (error) {
-        res.status(500).json(error);
+    catch(error:any){
+        res.status(500).json(error.message);
     }
 }
 
 //ci: string, titulo: string, descripcion: string, id_categoria: number, es_solicitud: boolean, url: string, id_usuario: string
 
-export const postPublication = async (req: Request, res: Response) => {
+export const postPublication = async (req, res) => {
     try{
-        const {ci, titulo, descripcion, id_categoria, es_solicitud, url} = req.body;
-        
-        const publications = await postPublicationQuery(ci, titulo, descripcion, id_categoria, es_solicitud, url);
+        const {titulo, descripcion, id_categoria, es_solicitud, url} = req.body;
+
+        const ci2 = req.user.ci; // Obtiene la ci del usuario desde el objeto req
+        const publications = await postPublicationQuery(ci2, titulo, descripcion, id_categoria, es_solicitud, url);
 
         res.status(200).json(publications.rows);
     }
@@ -36,5 +39,29 @@ export const postPublication = async (req: Request, res: Response) => {
         res.status(500).json(error);
     }
 }
+
+export const getCategories = async (_req: Request, res: Response) => {
+    try {
+        const categories = await getCategoriesQuery();
+        res.status(200).json(categories.rows);
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+}   
+
+
+
+export const getPublicationsUser = async (req, res) => {
+    try {
+        const ci = req.user.ci;
+        const publications = await getPublicationsUserQuery(ci);
+        res.status(200).json(publications.rows);
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+}
+
 
 
