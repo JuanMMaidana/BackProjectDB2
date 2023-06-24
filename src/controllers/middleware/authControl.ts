@@ -6,7 +6,7 @@ dotenv.config();
 
 
 export const authMiddleware = async (req, res, next) => {
-    
+    try{
         const token = req.headers.authorization.split(' ')[1];
 
         console.log('Token recibido:', token);
@@ -16,7 +16,7 @@ export const authMiddleware = async (req, res, next) => {
             throw new Error('No se ha encontrado el token');
         }
 
-    try{
+    
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload & { ci: number };
         req.user = decoded;
         next();
