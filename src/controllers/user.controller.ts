@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {postUserQuery, postUserLoginQuery, postFollowFriendQuery} from "../querys/userQuery";
+import {postUserQuery, postUserLoginQuery, postFollowFriendQuery, postUnFollowFriendQuery, postFriendshipStateQuery} from "../querys/userQuery";
 import {getPublicationsFriendsQuery} from "../querys/publicationQuery";
 
 
@@ -46,21 +46,52 @@ export const postUserLogin = async (req: Request, res: Response) =>{
 
 
 
-export const postFollowFriend = async (req, res) =>{
-    try{
-        const {ci_friend} = req.body;
-
-        const ci = req.user.ci;
-
-        const user = await postFollowFriendQuery(ci,ci_friend);
-
-        res.status(200).json(user.rows);
+export const postFollowFriend = async (req, res) => {
+    try {
+      const { ci_friend, friendbool } = req.body;
+      const ci = req.user.ci;
+      let user;
+  
+      if (friendbool) {
+        user = await postFollowFriendQuery(ci, ci_friend);
+      } else if (!friendbool) {
+        user = await postUnFollowFriendQuery(ci, ci_friend);
+      }
+  
+      res.status(200).json(user.rows);
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json(error.message);
     }
-    catch(error :any){
-        console.log(error)
-        res.status(500).json(error.message);
+  };
+  
+
+  export const postFriendshipState = async (req, res) => {
+    try {
+      const { ci_friend } = req.body;
+      const ci = req.user.ci;
+      let user: boolean;
+  
+      console.log(ci, ci_friend)
+  
+      user = await postFriendshipStateQuery(ci, ci_friend);
+  
+      console.log(` ${ci} y ${ci_friend} son amigos? ${user}`)
+  
+      res.status(200).json(user);
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({ error: true, message: error.message });
     }
-}
+  };
+  
+
+
+
+
+
+
+
     
 
 export const getPublicationsFriends = async (req, res) =>{

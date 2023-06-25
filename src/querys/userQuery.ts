@@ -118,3 +118,60 @@ export const postFollowFriendQuery = async (ci:number, ci_friend:number): Promis
             client.release();
         }
     }
+
+
+    export const postUnFollowFriendQuery = async (ci:number, ci_friend:number): Promise<QueryResult> => {
+
+        const client = await pool.connect();
+    
+        try {
+            
+            const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM seguidores WHERE ci_user = $1 AND ci_seguidor = $2', [ci, ci_friend]);
+    
+            if(duplicatePK.rows[0].count == 0){
+                throw new Error('No sigues a este usuario');
+            }
+    
+            const insertUser = `
+            DELETE FROM seguidores WHERE ci_user = $1 AND ci_seguidor = $2`
+    
+            const values = [ci, ci_friend];
+    
+            const result = await client.query(insertUser, values);
+    
+            return result;
+    
+        }
+        catch (error:any) {
+            throw error;
+        }
+        finally {
+            client.release();
+        }
+    }
+
+
+
+    export const postFriendshipStateQuery = async (ci:number, ci_friend:number): Promise<boolean> => {
+
+        const client = await pool.connect();
+    
+        try {
+            
+            const duplicatePK = await client.query('SELECT COUNT(*) AS count FROM seguidores WHERE ci_user = $1 AND ci_seguidor = $2', [ci, ci_friend]);
+    
+            if(duplicatePK.rows[0].count == 0){
+                return false;
+            }else
+            {
+                return true;
+            }
+        
+        }
+        catch (error:any) {
+            throw error;
+        }
+        finally {
+            client.release();
+        }
+    }
