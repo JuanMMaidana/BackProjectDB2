@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {postUserQuery, postUserLoginQuery, postFollowFriendQuery} from "../querys/userQuery";
+import {postUserQuery, postUserLoginQuery, postFollowFriendQuery, getUserInfoQuery} from "../querys/userQuery";
 import {getPublicationsFriendsQuery} from "../querys/publicationQuery";
 
 
@@ -76,4 +76,18 @@ export const getPublicationsFriends = async (req, res) =>{
     }
 }
 
+export const getUserInfo = async (req, res) =>{
+    try{
+
+        const ci = req.user.ci;
+
+        const user = await getUserInfoQuery(ci);
+
+        res.status(200).json(user.rows);
+    }
+    catch(error :any){
+        console.log(error)
+        res.status(500).json(error.message);
+    }
+}
 

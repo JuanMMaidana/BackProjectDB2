@@ -1,11 +1,13 @@
 import express from 'express'
 import indexRoutes from './routes/index'
+import cors from 'cors'
 
 
 const app = express()
 
 app.use(express.json()) // req.body into json
 app.use(express.urlencoded({ extended: true })) // req.body into urlencoded
+app.use(cors())
 
 
 

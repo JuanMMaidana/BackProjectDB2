@@ -118,3 +118,22 @@ export const postFollowFriendQuery = async (ci:number, ci_friend:number): Promis
             client.release();
         }
     }
+
+export const getUserInfoQuery = async (ci:number): Promise<QueryResult> => {
+        
+            const client = await pool.connect();
+        
+            try {
+                
+                const result = await client.query('SELECT nombre,apellidos,email,direccion FROM usuarios WHERE ci = $1', [ci]);
+        
+                return result;
+        
+            }
+            catch (error:any) {
+                throw error;
+            }
+            finally {
+                client.release();
+            }
+        }
