@@ -15,7 +15,7 @@ export const postUser = async (req: Request, res: Response) =>{
             throw new Error('Las contraseñas no coinciden');
         }
 
-        
+        console.log(ci,names,surnames,email,ubication,password,id_question,response)
 
         const user = await postUserQuery(ci,names,surnames,email,ubication,password,id_question,response);
 
@@ -29,6 +29,8 @@ export const postUser = async (req: Request, res: Response) =>{
 
 
 export const postUserLogin = async (req: Request, res: Response) =>{
+
+    console.log(req.body , "body")
     try{
         const {ci, password} = req.body;
 
@@ -75,5 +77,8 @@ export const getPublicationsFriends = async (req, res) =>{
         res.status(500).json(error.message);
     }
 }
+
+
+
 
 

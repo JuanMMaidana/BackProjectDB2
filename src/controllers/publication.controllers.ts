@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getPublicationsNecesityQuery, postPublicationQuery, getPublicationFiltersQuery, getCategoriesQuery, getPublicationsUserQuery } from "../querys/publicationQuery";
+import { getPublicationsNecesityQuery, postPublicationQuery, postPublicationFiltersQuery, getCategoriesQuery, getPublicationsUserQuery } from "../querys/publicationQuery";
 
 export const getPublicationsNecesity = async (_req: Request, res: Response) => {
     try {
@@ -11,11 +11,11 @@ export const getPublicationsNecesity = async (_req: Request, res: Response) => {
     }
 }
 
-export const getPublicationFiltersController = async (req: Request, res: Response) => {
+export const postPublicationFiltersController = async (req: Request, res: Response) => {
     try {
         const { titulo, categoria, es_solicitud } = req.body;
 
-        const publications = await getPublicationFiltersQuery(titulo, categoria, es_solicitud);
+        const publications = await postPublicationFiltersQuery(titulo, categoria, es_solicitud);
 
         res.status(200).json(publications.rows);
     }

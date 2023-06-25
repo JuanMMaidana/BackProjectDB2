@@ -66,7 +66,7 @@ export const getPublicationsNecesityQuery = async (): Promise<QueryResult> => {
 // }
 
 
-export const getPublicationFiltersQuery = async (titulo: string, categoria: string, es_solicitud: boolean): Promise<QueryResult> => {
+export const postPublicationFiltersQuery = async (titulo: string, categoria: string, es_solicitud: boolean): Promise<QueryResult> => {
   const client = await pool.connect();
 
   try {
