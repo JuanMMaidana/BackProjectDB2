@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getPublicationsNecesityQuery, postPublicationQuery, postPublicationFiltersQuery, getCategoriesQuery, getPublicationsUserQuery } from "../querys/publicationQuery";
+import { getPublicationsNecesityQuery, postPublicationQuery, getPublicationsFriendsQuery, postPublicationFiltersQuery, getCategoriesQuery, getPublicationsUserQuery } from "../querys/publicationQuery";
 
 export const getPublicationsNecesity = async (_req: Request, res: Response) => {
     try {
@@ -60,6 +60,18 @@ export const getPublicationsUser = async (req, res) => {
     }
     catch (error) {
         res.status(500).json(error);
+    }
+}
+
+
+export const getPublicationsFriends = async (req, res) => {
+    try {
+        const ci = req.user.ci;
+        const publications = await getPublicationsFriendsQuery(ci);
+        res.status(200).json(publications.rows);
+    }
+    catch(error:any){
+        res.status(500).json(error.message);
     }
 }
 

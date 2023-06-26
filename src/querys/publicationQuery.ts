@@ -171,17 +171,17 @@ export const getPublicationsUserQuery = async( ci :number) : Promise<QueryResult
 export const getPublicationsFriendsQuery = async (ci: number): Promise<QueryResult> => {
   const client = await pool.connect();
   try {
+    
     const query = `
-    SELECT p.id_publicacion p.titulo,p.descripcion,p.fecha,u.nombre,u.apellidos,u.email,u.direccion,c.nombre 
+    SELECT p.id_publicacion, p.titulo,p.descripcion,p.fecha,u.ci, u.nombre,u.apellidos,u.email,u.direccion,c.nombre 
     AS categoria, m.url AS multimedia
     FROM Publicaciones p 
     JOIN Usuarios u ON p.id_usuario = u.ci 
     JOIN Categorias c ON p.id_categoria = c.id_categoria 
     JOIN Multimedia m ON p.id_multimedia = m.id_multimedia, seguidores s 
-    WHERE ci_user = 'USER_REGISTRADO' and id_usuario = ci_seguidor ORDER BY p.fecha DESC 
+    WHERE ci_user = $1 and ci_seguidor = id_usuario ORDER BY p.fecha DESC 
     `;
 
-    
 
     const values = [ci];
     

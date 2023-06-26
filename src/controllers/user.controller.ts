@@ -45,7 +45,6 @@ export const postUserLogin = async (req: Request, res: Response) =>{
 }
 
 
-
 export const postFollowFriend = async (req, res) => {
     try {
       const { ci_friend, friendbool } = req.body;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPublicationsNecesity, postPublicationFiltersController, postPublication, getCategories, getPublicationsUser } from "../controllers/publication.controllers";
+import { getPublicationsNecesity, postPublicationFiltersController, postPublication, getCategories, getPublicationsUser,getPublicationsFriends } from "../controllers/publication.controllers";
 import { postUser, postUserLogin, postFollowFriend, postFriendshipState, getUserInfo } from "../controllers/user.controller";
 import authMiddleware from "../controllers/middleware/authControl";
 import { getSecurityQuestion } from "../controllers/securityQuestion.controller";
@@ -23,7 +23,7 @@ router.get('/publicationsUser', authMiddleware, getPublicationsUser);
 
 router.post('/seguirAmigo', authMiddleware, postFollowFriend);
 
-router.get('/publiacionesAmigos', authMiddleware, getPublicationsUser);
+router.get('/publiacionesAmigos', authMiddleware, getPublicationsFriends);
 
 router.get('/getUser', authMiddleware, getUserInfo);
 
