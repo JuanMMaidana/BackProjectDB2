@@ -19,7 +19,7 @@ router.post('/login' ,postUserLogin);
 
 router.get('/categorias', getCategories);
 
-router.post('/publicationsUser', authMiddleware, getPublicationsUser);
+router.get('/publicationsUser', authMiddleware, getPublicationsUser);
 
 router.post('/seguirAmigo', authMiddleware, postFollowFriend);
 
