@@ -66,7 +66,7 @@ export const getPublicationsNecesityQuery = async (): Promise<QueryResult> => {
 // }
 
 
-export const getPublicationFiltersQuery = async (titulo: string, categoria: string, es_solicitud: boolean): Promise<QueryResult> => {
+export const postPublicationFiltersQuery = async (titulo: string, categoria: string, es_solicitud: boolean): Promise<QueryResult> => {
   const client = await pool.connect();
 
   try {
@@ -172,18 +172,16 @@ export const getPublicationsFriendsQuery = async (ci: number): Promise<QueryResu
   const client = await pool.connect();
   try {
     const query = `
-      SELECT p.id_publicacion, p.titulo, p.descripcion, p.fecha, u.ci, u.nombre, u.apellidos, u.email, u.direccion, c.nombre AS categoria, m.url AS multimedia 
-      FROM Publicaciones p 
-      JOIN Usuarios u ON p.id_usuario = u.ci 
-      JOIN Categorias c ON p.id_categoria = c.id_categoria 
-      JOIN Multimedia m ON p.id_multimedia = m.id_multimedia 
-      WHERE p.id_usuario IN (
-        SELECT ci_seguidor
-        FROM Seguidores
-        WHERE ci_user = $1
-      )
-      ORDER BY p.fecha DESC;
+    SELECT p.id_publicacion p.titulo,p.descripcion,p.fecha,u.nombre,u.apellidos,u.email,u.direccion,c.nombre 
+    AS categoria, m.url AS multimedia
+    FROM Publicaciones p 
+    JOIN Usuarios u ON p.id_usuario = u.ci 
+    JOIN Categorias c ON p.id_categoria = c.id_categoria 
+    JOIN Multimedia m ON p.id_multimedia = m.id_multimedia, seguidores s 
+    WHERE ci_user = 'USER_REGISTRADO' and id_usuario = ci_seguidor ORDER BY p.fecha DESC 
     `;
+
+    
 
     const values = [ci];
     
